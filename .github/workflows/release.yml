@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  docker-build-ecr:
+    name: Build and Push App Image to ECR
+    uses: mandacode-labs/workflows/.github/workflows/docker-build-ecr.yml@develop
+    with:
+      images: |
+        [
+          {"name": "app", "dockerfile": "app.Dockerfile"}
+        ]
+      base-path: "docker"
+      aws-region: ap-northeast-2
+      ecr-registry: ${{ vars.REGISTRY }}
+      ecr-repository-prefix: ${{ vars.REPOSITORY }}
+      tag: ${{ github.ref_name }}
+      tag-prefix: "v"
+      platforms: "linux/amd64"
+      create-repository: true
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+
+  docker-build-ecr-mig:
+    name: Build and Push Migration Image to ECR
+    uses: mandacode-labs/workflows/.github/workflows/docker-build-ecr.yml@develop
+    with:
+      images: |
+        [
+          {"name": "migration", "dockerfile": "mig.Dockerfile"}
+        ]
+      base-path: "docker"
+      aws-region: ap-northeast-2
+      ecr-registry: ${{ vars.REGISTRY }}
+      ecr-repository-prefix: ${{ vars.REPOSITORY }}
+      tag: ${{ github.ref_name }}
+      tag-prefix: "v"
+      platforms: "linux/amd64"
+      create-repository: true
+    secrets:
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
