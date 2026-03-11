@@ -20,21 +20,6 @@ export const yamlSchema = z.object({
       .default('development'),
     port: z.number().int().positive().default(3000),
   }),
-  eventBus: z.object({
-    client: z.object({
-      clientId: z.string().default('tarot.tarot-core'),
-      brokers: z.array(z.string()).default([]),
-    }),
-    consumer: z.object({
-      groupId: z.string().default('tarot.tarot-core'),
-    }),
-    dlt: z.object({
-      retry: z.object({
-        maxAttempts: z.number().int().nonnegative().default(3),
-        delay: z.number().int().nonnegative().default(1000),
-      }),
-    }),
-  }),
   openai: z.object({
     apiKey: z.string().optional(),
     systemMessage: z.object({

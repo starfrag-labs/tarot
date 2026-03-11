@@ -7,7 +7,6 @@ export { yamlSchema, type YamlConfig } from './yaml.schema';
 // This schema uses yamlSchema as base but makes secrets required
 export const configSchema = z.object({
   server: yamlSchema.shape.server,
-  eventBus: yamlSchema.shape.eventBus,
   openai: z.object({
     apiKey: z.string().min(1),
     systemMessage: yamlSchema.shape.openai.shape.systemMessage,
