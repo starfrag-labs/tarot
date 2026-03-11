@@ -13,7 +13,7 @@ export const romanceOpenAIRequestSchema = z.object({
 export type RomanceOpenAIRequest = z.infer<typeof romanceOpenAIRequestSchema>;
 
 export const romanceOpenAIResponseSchema = z.object({
-  description: z.string().nonempty(),
+  description: z.string().min(1),
 });
 
 export type RomanceOpenAIResponse = z.infer<typeof romanceOpenAIResponseSchema>;

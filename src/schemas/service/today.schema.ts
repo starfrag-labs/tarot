@@ -13,7 +13,7 @@ export const todayOpenAIRequestSchema = z.object({
 export type TodayOpenAIRequest = z.infer<typeof todayOpenAIRequestSchema>;
 
 export const todayOpenAIResponseSchema = z.object({
-  description: z.string().nonempty(),
+  description: z.string().min(1),
 });
 
 export type TodayOpenAIResponse = z.infer<typeof todayOpenAIResponseSchema>;

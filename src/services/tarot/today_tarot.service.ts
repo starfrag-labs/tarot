@@ -58,7 +58,7 @@ export class TodayTarotService {
     result: TodayOpenAIResponse;
     userUuid: string;
   }): Promise<LatestTarot> {
-    return this.prisma.latestTarot.upsert({
+    return await this.prisma.latestTarot.upsert({
       where: {
         userUuid_type: {
           userUuid: data.userUuid,

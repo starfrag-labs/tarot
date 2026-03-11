@@ -1,0 +1,80 @@
+# Template: NestJS Project - Release (AWS ECR)
+#
+# Complete release workflow for NestJS projects to AWS ECR
+# Includes: Docker build/push to ECR
+#
+# Usage:
+#   1. Copy this file to your project's .github/workflows/release.yml
+#   2. Configure AWS OIDC or add AWS credentials as secrets
+#   3. Update AWS region and repository prefix
+#
+# AWS Authentication:
+#   Option 1 (Recommended): OIDC with IAM Role
+#     - Create IAM role with trust policy for GitHub OIDC
+#     - Set aws-role-arn secret
+#   Option 2: Access Keys
+#     - Set aws-access-key-id and aws-secret-access-key secrets
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  docker-build-ecr:
+    name: Build and Push Docker Images to ECR
+    uses: mandacode-labs/workflows/.github/workflows/docker-build-ecr.yml@main
+    with:
+      # Images to build (REQUIRED)
+      images: |
+        [
+          {"name": "app", "dockerfile": "app.Dockerfile"},
+          {"name": "migration", "dockerfile": "mig.Dockerfile"}
+        ]
+      # Multiple images example:
+      # images: |
+      #   [
+      #     {"name": "api", "dockerfile": "Dockerfile"},
+      #     {"name": "worker", "dockerfile": "services/worker/Dockerfile"}
+      #   ]
+
+      # AWS configuration (REQUIRED)
+      aws-region: ap-northeast-2
+      ecr-registry: ${{ vars.REGISTRY }}
+      ecr-repository-prefix: ${{ vars.REPOSITORY }}
+
+      # Tagging
+      tag: ${{ github.ref_name }}
+      tag-prefix: "v"
+      # additional-tags: "latest"
+
+      # Build options
+      base-path: "docker"
+      # build-context: "."
+      platforms: "linux/amd64"
+      # platforms: "linux/amd64,linux/arm64"
+
+      # Build arguments
+      # build-args: |
+      #   VERSION=${{ github.ref_name }}
+      #   GIT_COMMIT=${{ github.sha }}
+
+      # Security attestations
+      enable-provenance: false
+      enable-sbom: false
+
+      # Repository management
+      create-repository: true
+
+    secrets:
+      # Option 1: OIDC (Recommended)
+      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
+
+      # Option 2: Access Keys
+      # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -1,19 +1,17 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { Roles } from 'src/decorators/role.decorator';
 import { ResponseData } from 'src/interfaces/response.interface';
 import { ZodValidationPipe } from 'src/pipes/zod_validation.pipe';
-import { RoleEnum } from 'src/schemas/role.schema';
 import {
-  MonthlyStudyRequest,
   monthlyStudyRequestSchema,
+  type MonthlyStudyRequest,
 } from 'src/schemas/service/monthly_study.schema';
 import {
-  RomanceRequest,
   romanceRequestSchema,
+  type RomanceRequest,
 } from 'src/schemas/service/romance.schema';
 import {
-  TodayRequest,
   todayRequestSchema,
+  type TodayRequest,
 } from 'src/schemas/service/today.schema';
 import { MonthlyStudyTarotService } from 'src/services/tarot/monthly_study_tarot.service';
 import { RomanceTarotService } from 'src/services/tarot/romance_tarot.service';
@@ -28,7 +26,6 @@ export class TarotController {
   ) {}
 
   @Post('today')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getTodayTarotMessage(
     @Body(new ZodValidationPipe(todayRequestSchema)) data: TodayRequest,
@@ -45,7 +42,6 @@ export class TarotController {
   }
 
   @Post('romance')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getRomanceTarotMessage(
     @Body(new ZodValidationPipe(romanceRequestSchema)) data: RomanceRequest,
@@ -62,7 +58,6 @@ export class TarotController {
   }
 
   @Post('monthly-study')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getMonthlyStudyTarotMessage(
     @Body(new ZodValidationPipe(monthlyStudyRequestSchema))
