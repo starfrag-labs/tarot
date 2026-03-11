@@ -23,9 +23,9 @@ permissions:
 jobs:
   nest-ci:
     name: NestJS CI
-    uses: mandacode-labs/workflows/.github/workflows/nest-ci.yml@develop
+    uses: mandacode-labs/workflows/.github/workflows/nest-ci.yml@main
     with:
-      node-version: "24"
+      node-version: "25"
       enable-coverage: true
       coverage-threshold: 0
       enable-security-scan: true
@@ -33,7 +33,7 @@ jobs:
   docker-test:
     name: Docker Test
     needs: nest-ci
-    uses: mandacode-labs/workflows/.github/workflows/docker-test.yml@develop
+    uses: mandacode-labs/workflows/.github/workflows/docker-test.yml@main
     with:
       images: |
         [
@@ -48,13 +48,13 @@ jobs:
   helm-test:
     name: Helm Test
     needs: nest-ci
-    uses: mandacode-labs/workflows/.github/workflows/helm-test.yml@develop
+    uses: mandacode-labs/workflows/.github/workflows/helm-test.yml@main
     with:
       charts: |
         [
           {"dir": "deploy/chart"}
         ]
-      helm-version: "v4.0.4"
+      helm-version: "v4.1.1"
       kubernetes-version: "v1.35.0"
       enable-kubeconform: true
       enable-install-test: false
