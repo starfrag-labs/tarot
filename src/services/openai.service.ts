@@ -2,18 +2,18 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { ChatModel } from 'openai/resources';
-import { Config } from 'src/schemas/config.schema';
-import {
+import type { ChatModel } from 'openai/resources';
+import type { Config } from 'src/schemas/config.schema';
+import type {
   MonthlyStudyOpenAIRequest,
   MonthlyStudyOpenAIResponse,
-  monthlyStudyOpenAIResponseSchema,
 } from 'src/schemas/service/monthly_study.schema';
-import {
+import { monthlyStudyOpenAIResponseSchema } from 'src/schemas/service/monthly_study.schema';
+import type {
   RomanceOpenAIRequest,
   RomanceOpenAIResponse,
 } from 'src/schemas/service/romance.schema';
-import {
+import type {
   TodayOpenAIRequest,
   TodayOpenAIResponse,
 } from 'src/schemas/service/today.schema';
@@ -105,7 +105,7 @@ export class OpenAIService {
   async getMonthlyStudyTarotMessage(
     request: MonthlyStudyOpenAIRequest,
   ): Promise<MonthlyStudyOpenAIResponse> {
-    const response = await this.openAI.beta.chat.completions.parse({
+    const response = await this.openAI.chat.completions.parse({
       model: this.chatModel,
       messages: [
         {

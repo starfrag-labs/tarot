@@ -34,7 +34,7 @@ export const minorArcanaNumberSchema = z.nativeEnum(MinorArcanaNumberEnum);
 export type MinorArcanaNumber = z.infer<typeof minorArcanaNumberSchema>;
 
 export const minorArcanaCardSchema = z.object({
-  image: z.string().nonempty(),
+  image: z.string().min(1),
   direction: directionSchema,
   suit: minorArcanaSuitSchema,
   number: minorArcanaNumberSchema,

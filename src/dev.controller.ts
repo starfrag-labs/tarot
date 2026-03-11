@@ -1,8 +1,8 @@
 import { Controller, Get, HttpCode, Req } from '@nestjs/common';
+import type { Request } from 'express';
 import { RoleEnum } from './schemas/role.schema';
 import { Roles } from './decorators/role.decorator';
 import { User } from './decorators/user.decorator';
-import { Request } from 'express';
 
 @Controller('/dev')
 export class DevController {

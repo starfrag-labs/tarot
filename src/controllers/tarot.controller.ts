@@ -4,16 +4,16 @@ import { ResponseData } from 'src/interfaces/response.interface';
 import { ZodValidationPipe } from 'src/pipes/zod_validation.pipe';
 import { RoleEnum } from 'src/schemas/role.schema';
 import {
-  MonthlyStudyRequest,
   monthlyStudyRequestSchema,
+  type MonthlyStudyRequest,
 } from 'src/schemas/service/monthly_study.schema';
 import {
-  RomanceRequest,
   romanceRequestSchema,
+  type RomanceRequest,
 } from 'src/schemas/service/romance.schema';
 import {
-  TodayRequest,
   todayRequestSchema,
+  type TodayRequest,
 } from 'src/schemas/service/today.schema';
 import { MonthlyStudyTarotService } from 'src/services/tarot/monthly_study_tarot.service';
 import { RomanceTarotService } from 'src/services/tarot/romance_tarot.service';

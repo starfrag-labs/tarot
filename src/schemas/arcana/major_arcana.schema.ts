@@ -32,7 +32,7 @@ export type MajorArcana = z.infer<typeof majorArcanaSchema>;
 
 export const majorArcanaCardSchema = z.object({
   card: majorArcanaSchema,
-  image: z.string().nonempty(),
+  image: z.string().min(1),
   direction: directionSchema,
 });
 

@@ -14,7 +14,7 @@ export const configSchema = z.object({
   server: z.object({
     nodeEnv: z
       .string()
-      .nonempty()
+      .min(1)
       .transform((x) => x.toLowerCase())
       .refine((x) => ['development', 'production', 'test'].includes(x), {
         message:
@@ -25,11 +25,11 @@ export const configSchema = z.object({
   }),
   eventBus: z.object({
     client: z.object({
-      clientId: z.string().nonempty().default('tarot.tarot-core'),
-      brokers: z.array(z.string().nonempty()),
+      clientId: z.string().min(1).default('tarot.tarot-core'),
+      brokers: z.array(z.string().min(1)),
     }),
     consumer: z.object({
-      groupId: z.string().nonempty().default('tarot.tarot-core'),
+      groupId: z.string().min(1).default('tarot.tarot-core'),
     }),
     dlt: z.object({
       retry: z.object({
@@ -39,25 +39,25 @@ export const configSchema = z.object({
     }),
   }),
   openai: z.object({
-    api_key: z.string().nonempty(),
+    api_key: z.string().min(1),
     system_message: z.object({
       today: z
         .string()
-        .nonempty()
+        .min(1)
         .default(
           '주어지는 카드에 대하여 오늘의 타로 메시지를 서술해줘.' +
             commonSystemMessage,
         ),
       romance: z
         .string()
-        .nonempty()
+        .min(1)
         .default(
           '주어지는 카드에 대하여 로맨스 타로 메시지를 서술해줘.' +
             commonSystemMessage,
         ),
       monthly_study: z
         .string()
-        .nonempty()
+        .min(1)
         .default(
           '주어지는 카드에 대하여 월간 공부 타로 메시지를 서술해줘.' +
             'currentStateCard: 현재 상태에 대한 카드' +
@@ -68,8 +68,8 @@ export const configSchema = z.object({
     }),
   }),
   auth: z.object({
-    gatewayJwtHeader: z.string().nonempty().default('x-gateway-jwt'),
-    gatewayJwtSecret: z.string().nonempty(),
+    gatewayJwtHeader: z.string().min(1).default('x-gateway-jwt'),
+    gatewayJwtSecret: z.string().min(1),
   }),
 });
 

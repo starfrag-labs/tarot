@@ -15,7 +15,7 @@ export class ZodExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = HttpStatus.BAD_REQUEST;
-    const message = exception.errors.map((error) => error.message).join(', ');
+    const message = exception.issues.map((error) => error.message).join(', ');
     const errors = 'Validation Error';
 
     const errorResponse: ResponseError = {
