@@ -65,3 +65,32 @@ jobs:
       # Security scanning
       enable-trivy: true
       trivy-severity: "HIGH,CRITICAL"
+
+  # Helm Test - Lint, Validate, Install Test
+  # Delete this job if you don't use Helm charts
+  helm-test:
+    name: Helm Test
+    uses: mandacode-labs/workflows/.github/workflows/helm-test.yml@main
+    with:
+      # Charts to test (REQUIRED)
+      charts: |
+        [
+          {"dir": "deploy/chart"}
+        ]
+      # Multiple charts example:
+      # charts: |
+      #   [
+      #     {"dir": "charts/api"},
+      #     {"dir": "charts/worker"}
+      #   ]
+
+      # base-path: ""
+      # helm-version: "v4.0.4"
+      # kubernetes-version: "v1.34.0"
+
+      # Validation
+      enable-kubeconform: true
+      # kubeconform-version: "0.7.0"
+
+      # Install test (uses Kind cluster)
+      enable-install-test: false
