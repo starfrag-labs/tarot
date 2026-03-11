@@ -3,6 +3,8 @@ import { RomanceTarotService } from './romance_tarot.service';
 import { OpenAIService } from '../openai.service';
 import { PrismaService } from '../prisma.service';
 import { TarotType } from '@prisma/client';
+import { MajorArcanaEnum } from 'src/schemas/arcana/major_arcana.schema';
+import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('RomanceTarotService', () => {
   let service: RomanceTarotService;
@@ -51,8 +53,17 @@ describe('RomanceTarotService', () => {
   describe('readTarot', () => {
     it('should return romance tarot message from OpenAI', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        cards: [{ name: 'The Lovers', direction: 'upright' }],
+        card: {
+          card: MajorArcanaEnum.THE_LOVERS,
+          image: 'https://example.com/lovers.png',
+          direction: DirectionEnum.UPRIGHT,
+        },
+        userInfo: {
+          gender: 'female' as const,
+          brithDateTime: '1990-05-15T00:00:00Z',
+          datingStatus: 'single' as const,
+          jobStatus: 'employed' as const,
+        },
       };
 
       const mockResponse = {
@@ -73,7 +84,7 @@ describe('RomanceTarotService', () => {
   describe('saveData', () => {
     it('should save romance tarot data to database', async () => {
       const mockData = {
-        result: { description: 'Test romance description' },
+        result: { description: 'Test description' },
         userUuid: 'test-uuid',
       };
 

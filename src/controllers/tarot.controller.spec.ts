@@ -3,6 +3,8 @@ import { TarotController } from './tarot.controller';
 import { TodayTarotService } from 'src/services/tarot/today_tarot.service';
 import { RomanceTarotService } from 'src/services/tarot/romance_tarot.service';
 import { MonthlyStudyTarotService } from 'src/services/tarot/monthly_study_tarot.service';
+import { MajorArcanaEnum } from 'src/schemas/arcana/major_arcana.schema';
+import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('TarotController', () => {
   let controller: TarotController;
@@ -20,6 +22,19 @@ describe('TarotController', () => {
 
   const mockMonthlyStudyTarotService = {
     readTarot: jest.fn(),
+  };
+
+  const mockUserInfo = {
+    gender: 'male' as const,
+    brithDateTime: '1990-01-01T00:00:00Z',
+    datingStatus: 'single' as const,
+    jobStatus: 'employed' as const,
+  };
+
+  const mockMajorArcanaCard = {
+    card: MajorArcanaEnum.THE_FOOL,
+    image: 'https://example.com/fool.png',
+    direction: DirectionEnum.UPRIGHT,
   };
 
   beforeEach(async () => {
@@ -65,8 +80,8 @@ describe('TarotController', () => {
   describe('getTodayTarotMessage', () => {
     it('should return today tarot message', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        cards: [{ name: 'The Fool', direction: 'upright' }],
+        card: mockMajorArcanaCard,
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {
@@ -88,8 +103,11 @@ describe('TarotController', () => {
   describe('getRomanceTarotMessage', () => {
     it('should return romance tarot message', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        cards: [{ name: 'The Lovers', direction: 'upright' }],
+        card: {
+          ...mockMajorArcanaCard,
+          card: MajorArcanaEnum.THE_LOVERS,
+        },
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {
@@ -111,10 +129,22 @@ describe('TarotController', () => {
   describe('getMonthlyStudyTarotMessage', () => {
     it('should return monthly study tarot message', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        currentStateCard: { name: 'The Magician', direction: 'upright' },
-        obstacleCard: { name: 'The Tower', direction: 'reversed' },
-        adviceCard: { name: 'The Star', direction: 'upright' },
+        currentStateCard: {
+          card: MajorArcanaEnum.THE_MAGICIAN,
+          image: 'https://example.com/magician.png',
+          direction: DirectionEnum.UPRIGHT,
+        },
+        obstacleCard: {
+          card: MajorArcanaEnum.THE_TOWER,
+          image: 'https://example.com/tower.png',
+          direction: DirectionEnum.REVERSED,
+        },
+        adviceCard: {
+          card: MajorArcanaEnum.THE_STAR,
+          image: 'https://example.com/star.png',
+          direction: DirectionEnum.UPRIGHT,
+        },
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {

@@ -3,6 +3,8 @@ import { TodayTarotService } from './today_tarot.service';
 import { OpenAIService } from '../openai.service';
 import { PrismaService } from '../prisma.service';
 import { TarotType } from '@prisma/client';
+import { MajorArcanaEnum } from 'src/schemas/arcana/major_arcana.schema';
+import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('TodayTarotService', () => {
   let service: TodayTarotService;
@@ -18,6 +20,19 @@ describe('TodayTarotService', () => {
       findUnique: jest.fn(),
       upsert: jest.fn(),
     },
+  };
+
+  const mockUserInfo = {
+    gender: 'male' as const,
+    brithDateTime: '1990-01-01T00:00:00Z',
+    datingStatus: 'single' as const,
+    jobStatus: 'employed' as const,
+  };
+
+  const mockMajorArcanaCard = {
+    card: MajorArcanaEnum.THE_FOOL,
+    image: 'https://example.com/fool.png',
+    direction: DirectionEnum.UPRIGHT,
   };
 
   beforeEach(async () => {
@@ -51,8 +66,8 @@ describe('TodayTarotService', () => {
   describe('readTarot', () => {
     it('should return tarot message from OpenAI', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        cards: [{ name: 'The Fool', direction: 'upright' }],
+        card: mockMajorArcanaCard,
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {

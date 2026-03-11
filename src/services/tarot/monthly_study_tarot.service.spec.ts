@@ -3,6 +3,8 @@ import { MonthlyStudyTarotService } from './monthly_study_tarot.service';
 import { OpenAIService } from '../openai.service';
 import { PrismaService } from '../prisma.service';
 import { TarotType } from '@prisma/client';
+import { MajorArcanaEnum } from 'src/schemas/arcana/major_arcana.schema';
+import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('MonthlyStudyTarotService', () => {
   let service: MonthlyStudyTarotService;
@@ -51,10 +53,27 @@ describe('MonthlyStudyTarotService', () => {
   describe('readTarot', () => {
     it('should return monthly study tarot message from OpenAI', async () => {
       const mockRequest = {
-        userUuid: 'test-uuid',
-        currentStateCard: { name: 'The Magician', direction: 'upright' },
-        obstacleCard: { name: 'The Tower', direction: 'reversed' },
-        adviceCard: { name: 'The Star', direction: 'upright' },
+        currentStateCard: {
+          card: MajorArcanaEnum.THE_MAGICIAN,
+          image: 'https://example.com/magician.png',
+          direction: DirectionEnum.UPRIGHT,
+        },
+        obstacleCard: {
+          card: MajorArcanaEnum.THE_TOWER,
+          image: 'https://example.com/tower.png',
+          direction: DirectionEnum.REVERSED,
+        },
+        adviceCard: {
+          card: MajorArcanaEnum.THE_STAR,
+          image: 'https://example.com/star.png',
+          direction: DirectionEnum.UPRIGHT,
+        },
+        userInfo: {
+          gender: 'male' as const,
+          brithDateTime: '1985-03-20T00:00:00Z',
+          datingStatus: 'married' as const,
+          jobStatus: 'employed' as const,
+        },
       };
 
       const mockResponse = {
