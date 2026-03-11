@@ -8,11 +8,12 @@ import { ZodExceptionFilter } from './filters/zod_exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const config = app.get(ConfigService<Config, true>);
+  const configService = app.get(ConfigService<Config, true>);
+  const config = configService.get('server', { infer: true })!;
 
   app.enableCors();
 
-  await app.listen(config.get('server').port);
+  await app.listen(config.port);
 
   // Implement global exception filter
   app.useGlobalFilters(
