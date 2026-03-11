@@ -1,7 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { Config } from 'src/schemas/config.schema';
+import type { Config } from 'src/config/config.schema';
 import { KafkaService } from 'src/services/kafka.service';
 import { UserService } from 'src/services/user.service';
 

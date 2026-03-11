@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import type { ChatModel } from 'openai/resources';
-import type { Config } from 'src/schemas/config.schema';
+import type { Config } from 'src/config/config.schema';
 import type {
   MonthlyStudyOpenAIRequest,
   MonthlyStudyOpenAIResponse,
@@ -31,7 +31,7 @@ export class OpenAIService {
 
   onModuleInit() {
     this.openAI = new OpenAI({
-      apiKey: this.openAIConfig.api_key,
+      apiKey: this.openAIConfig.apiKey,
     });
   }
 
@@ -48,7 +48,7 @@ export class OpenAIService {
       messages: [
         {
           role: 'system',
-          content: this.openAIConfig.system_message.today,
+          content: this.openAIConfig.systemMessage.today,
         },
         {
           role: 'user',
@@ -79,7 +79,7 @@ export class OpenAIService {
       messages: [
         {
           role: 'system',
-          content: this.openAIConfig.system_message.romance,
+          content: this.openAIConfig.systemMessage.romance,
         },
         {
           role: 'user',
@@ -110,7 +110,7 @@ export class OpenAIService {
       messages: [
         {
           role: 'system',
-          content: this.openAIConfig.system_message.monthly_study,
+          content: this.openAIConfig.systemMessage.monthlyStudy,
         },
         {
           role: 'user',

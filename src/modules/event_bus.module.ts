@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { Config } from 'src/schemas/config.schema';
+import type { Config } from 'src/config/config.schema';
 import { KafkaService } from 'src/services/kafka.service';
 
 @Module({

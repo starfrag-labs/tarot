@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { Config } from './schemas/config.schema';
+import type { Config } from './config/config.schema';
 import { HttpExceptionFilter } from './filters/http_exception.filter';
 import { PrismaExceptionFilter } from './filters/prisma_exception.filter';
 import { ZodExceptionFilter } from './filters/zod_exception.filter';
@@ -33,7 +33,7 @@ async function bootstrap() {
   app.enableCors();
 
   await app.startAllMicroservices();
-  await app.listen(config.get<Config['server']>('server').port);
+  await app.listen(config.get('server').port);
 
   // Implement global exception filter
   app.useGlobalFilters(

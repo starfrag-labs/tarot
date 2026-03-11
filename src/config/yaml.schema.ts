@@ -10,26 +10,23 @@ const commonSystemMessage =
   '카드 설명시 카드의 영어이름을 말하고 정방향 또는 역방향의 의미를 알려줘' +
   '어투는 차갑게 해줘. ';
 
-export const configSchema = z.object({
+// Base YAML schema (all fields optional with defaults)
+export const yamlSchema = z.object({
   server: z.object({
     nodeEnv: z
       .string()
-      .min(1)
       .transform((x) => x.toLowerCase())
-      .refine((x) => ['development', 'production', 'test'].includes(x), {
-        message:
-          'NODE_ENV must be one of "development", "production", or "test"',
-      })
+      .refine((x) => ['development', 'production', 'test'].includes(x))
       .default('development'),
     port: z.number().int().positive().default(3000),
   }),
   eventBus: z.object({
     client: z.object({
-      clientId: z.string().min(1).default('tarot.tarot-core'),
-      brokers: z.array(z.string().min(1)),
+      clientId: z.string().default('tarot.tarot-core'),
+      brokers: z.array(z.string()).default([]),
     }),
     consumer: z.object({
-      groupId: z.string().min(1).default('tarot.tarot-core'),
+      groupId: z.string().default('tarot.tarot-core'),
     }),
     dlt: z.object({
       retry: z.object({
@@ -39,25 +36,22 @@ export const configSchema = z.object({
     }),
   }),
   openai: z.object({
-    api_key: z.string().min(1),
-    system_message: z.object({
+    apiKey: z.string().optional(),
+    systemMessage: z.object({
       today: z
         .string()
-        .min(1)
         .default(
           '주어지는 카드에 대하여 오늘의 타로 메시지를 서술해줘.' +
             commonSystemMessage,
         ),
       romance: z
         .string()
-        .min(1)
         .default(
           '주어지는 카드에 대하여 로맨스 타로 메시지를 서술해줘.' +
             commonSystemMessage,
         ),
-      monthly_study: z
+      monthlyStudy: z
         .string()
-        .min(1)
         .default(
           '주어지는 카드에 대하여 월간 공부 타로 메시지를 서술해줘.' +
             'currentStateCard: 현재 상태에 대한 카드' +
@@ -68,9 +62,9 @@ export const configSchema = z.object({
     }),
   }),
   auth: z.object({
-    gatewayJwtHeader: z.string().min(1).default('x-gateway-jwt'),
-    gatewayJwtSecret: z.string().min(1),
+    gatewayJwtHeader: z.string().default('x-gateway-jwt'),
+    gatewayJwtSecret: z.string().optional(),
   }),
 });
 
-export type Config = z.infer<typeof configSchema>;
+export type YamlConfig = z.infer<typeof yamlSchema>;

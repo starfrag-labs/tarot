@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/validate';
 import { AppController } from './app.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { Config } from './schemas/config.schema';
+import { Config } from './config/config.schema';
 import { TarotModule } from './modules/tarot.module';
 import { DevController } from './dev.controller';
 import { AuthModule } from './modules/auth.module';
@@ -16,12 +16,11 @@ import { UserModule } from './modules/user.module';
       isGlobal: true,
     }),
     JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService<Config, true>) => ({
-        secret: config.get<Config['auth']>('auth').gatewayJwtSecret,
+      inject: [ConfigModule],
+      useFactory: () => ({
+        secret: process.env.AUTH_GATEWAY_JWT_SECRET as string,
         global: true,
       }),
-      global: true,
     }),
     TarotModule,
     UserModule,
