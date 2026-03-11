@@ -12,10 +12,6 @@ export const configSchema = z.object({
     apiKey: z.string().min(1),
     systemMessage: yamlSchema.shape.openai.shape.systemMessage,
   }),
-  auth: z.object({
-    gatewayJwtHeader: yamlSchema.shape.auth.shape.gatewayJwtHeader,
-    gatewayJwtSecret: z.string().min(1),
-  }),
 });
 
 export type Config = z.infer<typeof configSchema>;

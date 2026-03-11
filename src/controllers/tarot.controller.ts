@@ -1,8 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { Roles } from 'src/decorators/role.decorator';
 import { ResponseData } from 'src/interfaces/response.interface';
 import { ZodValidationPipe } from 'src/pipes/zod_validation.pipe';
-import { RoleEnum } from 'src/schemas/role.schema';
 import {
   monthlyStudyRequestSchema,
   type MonthlyStudyRequest,
@@ -28,7 +26,6 @@ export class TarotController {
   ) {}
 
   @Post('today')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getTodayTarotMessage(
     @Body(new ZodValidationPipe(todayRequestSchema)) data: TodayRequest,
@@ -45,7 +42,6 @@ export class TarotController {
   }
 
   @Post('romance')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getRomanceTarotMessage(
     @Body(new ZodValidationPipe(romanceRequestSchema)) data: RomanceRequest,
@@ -62,7 +58,6 @@ export class TarotController {
   }
 
   @Post('monthly-study')
-  @Roles([RoleEnum.USER, RoleEnum.ADMIN])
   @HttpCode(200)
   async getMonthlyStudyTarotMessage(
     @Body(new ZodValidationPipe(monthlyStudyRequestSchema))

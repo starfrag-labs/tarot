@@ -61,10 +61,6 @@ export const yamlSchema = z.object({
         ),
     }),
   }),
-  auth: z.object({
-    gatewayJwtHeader: z.string().default('x-gateway-jwt'),
-    gatewayJwtSecret: z.string().optional(),
-  }),
 });
 
 export type YamlConfig = z.infer<typeof yamlSchema>;
