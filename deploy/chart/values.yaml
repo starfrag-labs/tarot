@@ -1,0 +1,110 @@
+# Application configuration
+app:
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  image:
+    repository: "registry.example.com/tarot-core/backend"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: "regcred"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+
+# YAML configuration (following yaml.schema structure)
+config:
+  server:
+    nodeEnv: "production"
+    port: 3000
+  openai:
+    existingSecret: ""  # External secret for openai secrets
+    existingSecretKeys:
+      apiKey: "apiKey"
+    systemMessage:
+      today: "주어지는 카드에 대하여 오늘의 타로 메시지를 서술해줘.한국어로 서술해줘.적절한 조언이 담긴 메시지를 서술해줘.실제로 점술가가 말하는 것처럼 자연스럽게 설명해줘직접적인 사용자의 정보는 사용하지마.특수 문자 또한 사용하지마.카드는 영어로 읽고 방향은 정방향, 역방향을 사용해 (eg. Five of Wands)카드 설명시 카드의 영어이름을 말하고 정방향 또는 역방향의 의미를 알려줘어투는 차갑게 해줘."
+      romance: "주어지는 카드에 대하여 로맨스 타로 메시지를 서술해줘.한국어로 서술해줘.적절한 조언이 담긴 메시지를 서술해줘.실제로 점술가가 말하는 것처럼 자연스럽게 설명해줘직접적인 사용자의 정보는 사용하지마.특수 문자 또한 사용하지마.카드는 영어로 읽고 방향은 정방향, 역방향을 사용해 (eg. Five of Wands)카드 설명시 카드의 영어이름을 말하고 정방향 또는 역방향의 의미를 알려줘어투는 차갑게 해줘."
+      monthlyStudy: "주어지는 카드에 대하여 월간 공부 타로 메시지를 서술해줘.currentStateCard: 현재 상태에 대한 카드obstacleCard: 현재 상태의 장애물adviceCard: 앞으로의 조언한국어로 서술해줘.적절한 조언이 담긴 메시지를 서술해줘.실제로 점술가가 말하는 것처럼 자연스럽게 설명해줘직접적인 사용자의 정보는 사용하지마.특수 문자 또한 사용하지마.카드는 영어로 읽고 방향은 정방향, 역방향을 사용해 (eg. Five of Wands)카드 설명시 카드의 영어이름을 말하고 정방향 또는 역방향의 의미를 알려줘어투는 차갑게 해줘."
+
+# Database configuration
+database:
+  existingSecret: ""
+  existingSecretKeys:
+    username: "username"
+    password: "password"
+  host: "postgres"
+  port: 5432
+  dbName: "tarot"
+  sslMode: "require"
+  username: "postgres"
+  password: "postgres"
+
+# Database migration configuration
+migration:
+  enabled: true
+  image:
+    repository: "registry.example.com/tarot-core/migration"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    pullSecrets:
+      - name: "regcred"
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# Node selector and tolerations
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Monitoring
+monitoring:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    path: /metrics

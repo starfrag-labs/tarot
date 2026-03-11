@@ -1,0 +1,16 @@
+apiVersion: v2
+name: tarot-core
+description: A Helm chart for Tarot Core API Service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+keywords:
+  - api
+  - nestjs
+  - tarot
+  - backend
+
+maintainers:
+  - name: Tarot Core Team
+    email: dev@tarotcore.com
