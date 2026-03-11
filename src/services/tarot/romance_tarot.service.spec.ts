@@ -8,8 +8,6 @@ import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('RomanceTarotService', () => {
   let service: RomanceTarotService;
-  let openAIService: OpenAIService;
-  let prismaService: PrismaService;
 
   const mockOpenAIService = {
     getRomanceTarotMessage: jest.fn(),
@@ -20,6 +18,19 @@ describe('RomanceTarotService', () => {
       findUnique: jest.fn(),
       upsert: jest.fn(),
     },
+  };
+
+  const mockUserInfo = {
+    gender: 'female' as const,
+    brithDateTime: '1990-05-15T00:00:00Z',
+    datingStatus: 'single' as const,
+    jobStatus: 'employed' as const,
+  };
+
+  const mockMajorArcanaCard = {
+    card: MajorArcanaEnum.THE_LOVERS,
+    image: 'https://example.com/lovers.png',
+    direction: DirectionEnum.UPRIGHT,
   };
 
   beforeEach(async () => {
@@ -38,8 +49,6 @@ describe('RomanceTarotService', () => {
     }).compile();
 
     service = module.get<RomanceTarotService>(RomanceTarotService);
-    openAIService = module.get<OpenAIService>(OpenAIService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
@@ -53,17 +62,8 @@ describe('RomanceTarotService', () => {
   describe('readTarot', () => {
     it('should return romance tarot message from OpenAI', async () => {
       const mockRequest = {
-        card: {
-          card: MajorArcanaEnum.THE_LOVERS,
-          image: 'https://example.com/lovers.png',
-          direction: DirectionEnum.UPRIGHT,
-        },
-        userInfo: {
-          gender: 'female' as const,
-          brithDateTime: '1990-05-15T00:00:00Z',
-          datingStatus: 'single' as const,
-          jobStatus: 'employed' as const,
-        },
+        card: mockMajorArcanaCard,
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {
@@ -74,7 +74,7 @@ describe('RomanceTarotService', () => {
 
       const result = await service.readTarot(mockRequest);
 
-      expect(openAIService.getRomanceTarotMessage).toHaveBeenCalledWith(
+      expect(mockOpenAIService.getRomanceTarotMessage).toHaveBeenCalledWith(
         mockRequest,
       );
       expect(result).toEqual(mockResponse);
@@ -102,7 +102,7 @@ describe('RomanceTarotService', () => {
 
       const result = await service.saveData(mockData);
 
-      expect(prismaService.latestTarot.upsert).toHaveBeenCalledWith({
+      expect(mockPrismaService.latestTarot.upsert).toHaveBeenCalledWith({
         where: {
           userUuid_type: {
             userUuid: mockData.userUuid,

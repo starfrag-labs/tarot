@@ -8,8 +8,6 @@ import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('MonthlyStudyTarotService', () => {
   let service: MonthlyStudyTarotService;
-  let openAIService: OpenAIService;
-  let prismaService: PrismaService;
 
   const mockOpenAIService = {
     getMonthlyStudyTarotMessage: jest.fn(),
@@ -21,6 +19,19 @@ describe('MonthlyStudyTarotService', () => {
       upsert: jest.fn(),
     },
   };
+
+  const mockUserInfo = {
+    gender: 'male' as const,
+    brithDateTime: '1985-03-20T00:00:00Z',
+    datingStatus: 'married' as const,
+    jobStatus: 'employed' as const,
+  };
+
+  const mockMajorArcanaCard = (card: MajorArcanaEnum) => ({
+    card,
+    image: `https://example.com/${card}.png`,
+    direction: DirectionEnum.UPRIGHT,
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,8 +49,6 @@ describe('MonthlyStudyTarotService', () => {
     }).compile();
 
     service = module.get<MonthlyStudyTarotService>(MonthlyStudyTarotService);
-    openAIService = module.get<OpenAIService>(OpenAIService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
@@ -53,27 +62,10 @@ describe('MonthlyStudyTarotService', () => {
   describe('readTarot', () => {
     it('should return monthly study tarot message from OpenAI', async () => {
       const mockRequest = {
-        currentStateCard: {
-          card: MajorArcanaEnum.THE_MAGICIAN,
-          image: 'https://example.com/magician.png',
-          direction: DirectionEnum.UPRIGHT,
-        },
-        obstacleCard: {
-          card: MajorArcanaEnum.THE_TOWER,
-          image: 'https://example.com/tower.png',
-          direction: DirectionEnum.REVERSED,
-        },
-        adviceCard: {
-          card: MajorArcanaEnum.THE_STAR,
-          image: 'https://example.com/star.png',
-          direction: DirectionEnum.UPRIGHT,
-        },
-        userInfo: {
-          gender: 'male' as const,
-          brithDateTime: '1985-03-20T00:00:00Z',
-          datingStatus: 'married' as const,
-          jobStatus: 'employed' as const,
-        },
+        currentStateCard: mockMajorArcanaCard(MajorArcanaEnum.THE_MAGICIAN),
+        obstacleCard: mockMajorArcanaCard(MajorArcanaEnum.THE_TOWER),
+        adviceCard: mockMajorArcanaCard(MajorArcanaEnum.THE_STAR),
+        userInfo: mockUserInfo,
       };
 
       const mockResponse = {
@@ -89,9 +81,9 @@ describe('MonthlyStudyTarotService', () => {
 
       const result = await service.readTarot(mockRequest);
 
-      expect(openAIService.getMonthlyStudyTarotMessage).toHaveBeenCalledWith(
-        mockRequest,
-      );
+      expect(
+        mockOpenAIService.getMonthlyStudyTarotMessage,
+      ).toHaveBeenCalledWith(mockRequest);
       expect(result).toEqual(mockResponse);
     });
   });
@@ -122,7 +114,7 @@ describe('MonthlyStudyTarotService', () => {
 
       const result = await service.saveData(mockData);
 
-      expect(prismaService.latestTarot.upsert).toHaveBeenCalledWith({
+      expect(mockPrismaService.latestTarot.upsert).toHaveBeenCalledWith({
         where: {
           userUuid_type: {
             userUuid: mockData.userUuid,

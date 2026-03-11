@@ -8,8 +8,6 @@ import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('TodayTarotService', () => {
   let service: TodayTarotService;
-  let openAIService: OpenAIService;
-  let prismaService: PrismaService;
 
   const mockOpenAIService = {
     getTodayTarotMessage: jest.fn(),
@@ -51,8 +49,6 @@ describe('TodayTarotService', () => {
     }).compile();
 
     service = module.get<TodayTarotService>(TodayTarotService);
-    openAIService = module.get<OpenAIService>(OpenAIService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
@@ -78,7 +74,7 @@ describe('TodayTarotService', () => {
 
       const result = await service.readTarot(mockRequest);
 
-      expect(openAIService.getTodayTarotMessage).toHaveBeenCalledWith(
+      expect(mockOpenAIService.getTodayTarotMessage).toHaveBeenCalledWith(
         mockRequest,
       );
       expect(result).toEqual(mockResponse);
@@ -106,7 +102,7 @@ describe('TodayTarotService', () => {
 
       const result = await service.saveTarot(mockData);
 
-      expect(prismaService.latestTarot.upsert).toHaveBeenCalledWith({
+      expect(mockPrismaService.latestTarot.upsert).toHaveBeenCalledWith({
         where: {
           userUuid_type: {
             userUuid: mockData.userUuid,

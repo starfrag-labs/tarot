@@ -8,9 +8,6 @@ import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
 
 describe('TarotController', () => {
   let controller: TarotController;
-  let todayTarotService: TodayTarotService;
-  let romanceTarotService: RomanceTarotService;
-  let monthlyStudyTarotService: MonthlyStudyTarotService;
 
   const mockTodayTarotService = {
     readTarot: jest.fn(),
@@ -62,11 +59,6 @@ describe('TarotController', () => {
       .compile();
 
     controller = module.get<TarotController>(TarotController);
-    todayTarotService = module.get<TodayTarotService>(TodayTarotService);
-    romanceTarotService = module.get<RomanceTarotService>(RomanceTarotService);
-    monthlyStudyTarotService = module.get<MonthlyStudyTarotService>(
-      MonthlyStudyTarotService,
-    );
   });
 
   afterEach(() => {
@@ -92,7 +84,7 @@ describe('TarotController', () => {
 
       const result = await controller.getTodayTarotMessage(mockRequest);
 
-      expect(todayTarotService.readTarot).toHaveBeenCalledWith(mockRequest);
+      expect(mockTodayTarotService.readTarot).toHaveBeenCalledWith(mockRequest);
       expect(result).toEqual({
         message: 'success',
         data: mockResponse,
@@ -118,7 +110,9 @@ describe('TarotController', () => {
 
       const result = await controller.getRomanceTarotMessage(mockRequest);
 
-      expect(romanceTarotService.readTarot).toHaveBeenCalledWith(mockRequest);
+      expect(mockRomanceTarotService.readTarot).toHaveBeenCalledWith(
+        mockRequest,
+      );
       expect(result).toEqual({
         message: 'success',
         data: mockResponse,
@@ -158,7 +152,7 @@ describe('TarotController', () => {
 
       const result = await controller.getMonthlyStudyTarotMessage(mockRequest);
 
-      expect(monthlyStudyTarotService.readTarot).toHaveBeenCalledWith(
+      expect(mockMonthlyStudyTarotService.readTarot).toHaveBeenCalledWith(
         mockRequest,
       );
       expect(result).toEqual({
