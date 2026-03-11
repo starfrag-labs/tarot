@@ -19,7 +19,7 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
 
 permissions:
   contents: read
@@ -33,7 +33,8 @@ jobs:
       # Images to build (REQUIRED)
       images: |
         [
-          {"name": "app", "dockerfile": "app.Dockerfile"}
+          {"name": "app", "dockerfile": "app.Dockerfile"},
+          {"name": "migration", "dockerfile": "mig.Dockerfile"}
         ]
       # Multiple images example:
       # images: |
@@ -44,8 +45,8 @@ jobs:
 
       # AWS configuration (REQUIRED)
       aws-region: ap-northeast-2
-      # ecr-registry: ""  # Auto-detected from credentials
-      ecr-repository-prefix: tarot
+      ecr-registry: ${{ vars.REGISTRY }}
+      ecr-repository-prefix: ${{ vars.REPOSITORY }}
 
       # Tagging
       tag: ${{ github.ref_name }}
@@ -77,35 +78,3 @@ jobs:
       # Option 2: Access Keys
       # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-  docker-build-ecr-mig:
-    name: Build and Push Migration Image to ECR
-    uses: mandacode-lab/workflows/.github/workflows/docker-build-ecr.yml@main
-    with:
-      # Images to build (REQUIRED)
-      images: |
-        [
-          {"name": "migration", "dockerfile": "mig.Dockerfile"}
-        ]
-
-      # AWS configuration (REQUIRED)
-      aws-region: ap-northeast-2
-      ecr-repository-prefix: tarot
-
-      # Tagging
-      tag: ${{ github.ref_name }}
-      tag-prefix: "v"
-
-      # Build options
-      base-path: "docker"
-      platforms: "linux/amd64"
-
-      # Security attestations
-      enable-provenance: false
-      enable-sbom: false
-
-      # Repository management
-      create-repository: true
-
-    secrets:
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
