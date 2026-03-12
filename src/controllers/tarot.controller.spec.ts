@@ -1,37 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TarotController } from './tarot.controller';
-import { TodayTarotService } from 'src/services/tarot/today_tarot.service';
-import { RomanceTarotService } from 'src/services/tarot/romance_tarot.service';
-import { MonthlyStudyTarotService } from 'src/services/tarot/monthly_study_tarot.service';
-import { MajorArcanaEnum } from 'src/schemas/arcana/major_arcana.schema';
-import { DirectionEnum } from 'src/schemas/arcana/direction.schema';
+import { TarotService } from 'src/services/tarot.service';
 
 describe('TarotController', () => {
   let controller: TarotController;
 
-  const mockTodayTarotService = {
+  const mockTarotService = {
     readTarot: jest.fn(),
-  };
-
-  const mockRomanceTarotService = {
-    readTarot: jest.fn(),
-  };
-
-  const mockMonthlyStudyTarotService = {
-    readTarot: jest.fn(),
-  };
-
-  const mockUserInfo = {
-    gender: 'male' as const,
-    brithDateTime: '1990-01-01T00:00:00Z',
-    datingStatus: 'single' as const,
-    jobStatus: 'employed' as const,
-  };
-
-  const mockMajorArcanaCard = {
-    card: MajorArcanaEnum.THE_FOOL,
-    image: 'https://example.com/fool.png',
-    direction: DirectionEnum.UPRIGHT,
   };
 
   beforeEach(async () => {
@@ -39,16 +14,8 @@ describe('TarotController', () => {
       controllers: [TarotController],
       providers: [
         {
-          provide: TodayTarotService,
-          useValue: mockTodayTarotService,
-        },
-        {
-          provide: RomanceTarotService,
-          useValue: mockRomanceTarotService,
-        },
-        {
-          provide: MonthlyStudyTarotService,
-          useValue: mockMonthlyStudyTarotService,
+          provide: TarotService,
+          useValue: mockTarotService,
         },
       ],
     })
@@ -69,92 +36,20 @@ describe('TarotController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('getTodayTarotMessage', () => {
-    it('should return today tarot message', async () => {
-      const mockRequest = {
-        card: mockMajorArcanaCard,
-        userInfo: mockUserInfo,
-      };
-
+  describe('readTarot', () => {
+    it('should return tarot message', async () => {
       const mockResponse = {
-        description: 'Today is a great day!',
+        title: 'The Fool',
+        titleKR: '바보',
+        keywords: ['new beginning', 'adventure', 'innocence', 'spontaneity'],
+        advice: 'Today is a great day for new beginnings!',
       };
 
-      mockTodayTarotService.readTarot.mockResolvedValue(mockResponse);
+      mockTarotService.readTarot.mockResolvedValue(mockResponse);
 
-      const result = await controller.getTodayTarotMessage(mockRequest);
+      const result = await controller.readTarot({});
 
-      expect(mockTodayTarotService.readTarot).toHaveBeenCalledWith(mockRequest);
-      expect(result).toEqual({
-        message: 'success',
-        data: mockResponse,
-      });
-    });
-  });
-
-  describe('getRomanceTarotMessage', () => {
-    it('should return romance tarot message', async () => {
-      const mockRequest = {
-        card: {
-          ...mockMajorArcanaCard,
-          card: MajorArcanaEnum.THE_LOVERS,
-        },
-        userInfo: mockUserInfo,
-      };
-
-      const mockResponse = {
-        description: 'Love is in the air!',
-      };
-
-      mockRomanceTarotService.readTarot.mockResolvedValue(mockResponse);
-
-      const result = await controller.getRomanceTarotMessage(mockRequest);
-
-      expect(mockRomanceTarotService.readTarot).toHaveBeenCalledWith(
-        mockRequest,
-      );
-      expect(result).toEqual({
-        message: 'success',
-        data: mockResponse,
-      });
-    });
-  });
-
-  describe('getMonthlyStudyTarotMessage', () => {
-    it('should return monthly study tarot message', async () => {
-      const mockRequest = {
-        currentStateCard: {
-          card: MajorArcanaEnum.THE_MAGICIAN,
-          image: 'https://example.com/magician.png',
-          direction: DirectionEnum.UPRIGHT,
-        },
-        obstacleCard: {
-          card: MajorArcanaEnum.THE_TOWER,
-          image: 'https://example.com/tower.png',
-          direction: DirectionEnum.REVERSED,
-        },
-        adviceCard: {
-          card: MajorArcanaEnum.THE_STAR,
-          image: 'https://example.com/star.png',
-          direction: DirectionEnum.UPRIGHT,
-        },
-        userInfo: mockUserInfo,
-      };
-
-      const mockResponse = {
-        currentState: 'You are in a good place',
-        obstacle: 'Watch out for challenges',
-        advice: 'Keep moving forward',
-        summary: 'Overall positive outlook',
-      };
-
-      mockMonthlyStudyTarotService.readTarot.mockResolvedValue(mockResponse);
-
-      const result = await controller.getMonthlyStudyTarotMessage(mockRequest);
-
-      expect(mockMonthlyStudyTarotService.readTarot).toHaveBeenCalledWith(
-        mockRequest,
-      );
+      expect(mockTarotService.readTarot).toHaveBeenCalledWith();
       expect(result).toEqual({
         message: 'success',
         data: mockResponse,

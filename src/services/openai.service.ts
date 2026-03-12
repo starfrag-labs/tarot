@@ -4,19 +4,15 @@ import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import type { ChatModel } from 'openai/resources';
 import type { Config } from 'src/config/config.schema';
-import type {
-  MonthlyStudyOpenAIRequest,
-  MonthlyStudyOpenAIResponse,
-} from 'src/schemas/service/monthly_study.schema';
-import { monthlyStudyOpenAIResponseSchema } from 'src/schemas/service/monthly_study.schema';
-import type {
-  RomanceOpenAIRequest,
-  RomanceOpenAIResponse,
-} from 'src/schemas/service/romance.schema';
-import type {
-  TodayOpenAIRequest,
-  TodayOpenAIResponse,
-} from 'src/schemas/service/today.schema';
+import type { ReadResponse } from 'src/schemas/service/read.schema';
+import { readResponseSchema } from 'src/schemas/service/read.schema';
+import type { TarotCard } from 'src/services/tarot.service';
+
+interface TarotMessageRequest {
+  card: TarotCard;
+  direction: 'upright' | 'reversed';
+  keywords: string[];
+}
 
 @Injectable()
 export class OpenAIService {
@@ -36,91 +32,31 @@ export class OpenAIService {
   }
 
   /**
-   * Get today tarot message
-   * @param request TodayOpenAIRequest
-   * @returns TodayOpenAIResponse
+   * Get tarot message
+   * @param request TarotMessageRequest
+   * @returns ReadResponse
    */
-  async getTodayTarotMessage(
-    request: TodayOpenAIRequest,
-  ): Promise<TodayOpenAIResponse> {
-    const response = await this.openAI.chat.completions.create({
-      model: this.chatModel,
-      messages: [
-        {
-          role: 'system',
-          content: this.openAIConfig.systemMessage.today,
-        },
-        {
-          role: 'user',
-          content: JSON.stringify(request),
-        },
-      ],
-    });
+  async getTarotMessage(request: TarotMessageRequest): Promise<ReadResponse> {
+    const directionText = request.direction === 'upright' ? '정방향' : '역방향';
 
-    if (!response.choices[0].message.content) {
-      throw new InternalServerErrorException('OpenAI request failed');
-    }
-
-    return {
-      description: response.choices[0].message.content,
-    };
-  }
-
-  /**
-   * Get romance tarot message
-   * @param request RomanceOpenAIRequest
-   * @returns RomanceOpenAIResponse
-   */
-  async getRomanceTarotMessage(
-    request: RomanceOpenAIRequest,
-  ): Promise<RomanceOpenAIResponse> {
-    const response = await this.openAI.chat.completions.create({
-      model: this.chatModel,
-      messages: [
-        {
-          role: 'system',
-          content: this.openAIConfig.systemMessage.romance,
-        },
-        {
-          role: 'user',
-          content: JSON.stringify(request),
-        },
-      ],
-    });
-
-    if (!response.choices[0].message.content) {
-      throw new InternalServerErrorException('OpenAI request failed');
-    }
-
-    return {
-      description: response.choices[0].message.content,
-    };
-  }
-
-  /**
-   * Get monthly study tarot message
-   * @param request MonthlyStudyOpenAIRequest
-   * @returns MonthlyStudyOpenAIResponse
-   */
-  async getMonthlyStudyTarotMessage(
-    request: MonthlyStudyOpenAIRequest,
-  ): Promise<MonthlyStudyOpenAIResponse> {
     const response = await this.openAI.chat.completions.parse({
       model: this.chatModel,
       messages: [
         {
           role: 'system',
-          content: this.openAIConfig.systemMessage.monthlyStudy,
+          content: this.openAIConfig.systemMessage.read,
         },
         {
           role: 'user',
-          content: JSON.stringify(request),
+          content: JSON.stringify({
+            card: request.card.name,
+            cardKR: request.card.nameKR,
+            direction: directionText,
+            keywords: request.keywords,
+          }),
         },
       ],
-      response_format: zodResponseFormat(
-        monthlyStudyOpenAIResponseSchema,
-        'MonthlyStudyOpenAIResponse',
-      ),
+      response_format: zodResponseFormat(readResponseSchema, 'ReadResponse'),
     });
 
     if (!response.choices[0].message.parsed) {
