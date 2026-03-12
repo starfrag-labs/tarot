@@ -30,6 +30,9 @@ config:
   server:
     nodeEnv: "production"
     port: 3000
+    corsOrigins:
+      - "*"
+    corsCredentials: true
   openai:
     existingSecret: ""  # External secret for openai secrets
     existingSecretKeys:
