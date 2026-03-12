@@ -1,19 +1,12 @@
-# Template: NestJS Project - Release (AWS ECR)
+# Template: Release (GitHub Container Registry)
 #
-# Complete release workflow for NestJS projects to AWS ECR
-# Includes: Docker build/push to ECR
+# Complete release workflow to GitHub Container Registry (ghcr.io)
+# Includes: Docker build/push and Helm chart packaging
 #
 # Usage:
 #   1. Copy this file to your project's .github/workflows/release.yml
-#   2. Configure AWS OIDC or add AWS credentials as secrets
-#   3. Update AWS region and repository prefix
-#
-# AWS Authentication:
-#   Option 1 (Recommended): OIDC with IAM Role
-#     - Create IAM role with trust policy for GitHub OIDC
-#     - Set aws-role-arn secret
-#   Option 2: Access Keys
-#     - Set aws-access-key-id and aws-secret-access-key secrets
+#   2. Configure GITHUB_TOKEN permissions (packages:write)
+#   3. Images will be pushed to ghcr.io/<owner>/<image>
 
 name: Release
 
@@ -23,12 +16,12 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  packages: write
 
 jobs:
-  docker-build-ecr:
-    name: Build and Push Docker Images to ECR
-    uses: mandacode-labs/workflows/.github/workflows/docker-build-ecr.yml@main
+  docker-build:
+    name: Build and Push Docker Images
+    uses: mandacode-labs/workflows/.github/workflows/docker-build.yml@main
     with:
       # Images to build (REQUIRED)
       images: |
@@ -43,15 +36,14 @@ jobs:
       #     {"name": "worker", "dockerfile": "services/worker/Dockerfile"}
       #   ]
 
-      # AWS configuration (REQUIRED)
-      aws-region: ap-northeast-2
-      ecr-registry: ${{ vars.REGISTRY }}
-      ecr-repository-prefix: ${{ vars.REPOSITORY }}
+      # Registry configuration (REQUIRED for GitHub)
+      registry: ${{ vars.REGISTRY }}
+      repository: ${{ vars.REPOSITORY }}
 
       # Tagging
       tag: ${{ github.ref_name }}
       tag-prefix: "v"
-      # additional-tags: "latest"
+      # additional-tags: "latest,stable"
 
       # Build options
       base-path: "docker"
@@ -68,13 +60,6 @@ jobs:
       enable-provenance: false
       enable-sbom: false
 
-      # Repository management
-      create-repository: true
-
     secrets:
-      # Option 1: OIDC (Recommended)
-      aws-role-arn: ${{ secrets.AWS_ROLE_ARN }}
-
-      # Option 2: Access Keys
-      # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      registry-username: ${{ secrets.REGISTRY_USERNAME }}
+      registry-password: ${{ secrets.REGISTRY_PASSWORD }}
