@@ -27,6 +27,8 @@ export const yamlSchema = z.object({
       .refine((x) => ['development', 'production', 'test'].includes(x))
       .default('development'),
     port: z.number().int().positive().default(3000),
+    corsOrigins: z.array(z.string()).default(['*']),
+    corsCredentials: z.boolean().default(true),
   }),
   openai: z.object({
     apiKey: z.string().optional(),
