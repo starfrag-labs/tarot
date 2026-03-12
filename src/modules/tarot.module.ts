@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { TarotController } from 'src/controllers/tarot.controller';
 import { OpenAIModule } from './openai.module';
 import { TarotService } from 'src/services/tarot.service';
-import { PrismaModule } from './prisma.module';
 
 @Module({
-  imports: [OpenAIModule, PrismaModule],
+  imports: [OpenAIModule],
   controllers: [TarotController],
   providers: [TarotService],
 })
