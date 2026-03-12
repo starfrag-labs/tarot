@@ -8,8 +8,3 @@ export const readResponseSchema = z.object({
 });
 
 export type ReadResponse = z.infer<typeof readResponseSchema>;
-
-// 요청 없음 - 서버에서 랜덤 카드/키워드 선택
-export const readRequestSchema = z.object({});
-
-export type ReadRequest = z.infer<typeof readRequestSchema>;

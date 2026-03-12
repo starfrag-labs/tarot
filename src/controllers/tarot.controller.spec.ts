@@ -18,12 +18,7 @@ describe('TarotController', () => {
           useValue: mockTarotService,
         },
       ],
-    })
-      .overridePipe('ZodValidationPipe')
-      .useValue({
-        transform: (value: unknown) => value,
-      })
-      .compile();
+    }).compile();
 
     controller = module.get<TarotController>(TarotController);
   });
@@ -47,7 +42,7 @@ describe('TarotController', () => {
 
       mockTarotService.readTarot.mockResolvedValue(mockResponse);
 
-      const result = await controller.readTarot({});
+      const result = await controller.readTarot();
 
       expect(mockTarotService.readTarot).toHaveBeenCalledWith();
       expect(result).toEqual({
